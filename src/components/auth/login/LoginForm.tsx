@@ -80,7 +80,8 @@ const LoginForm = () => {
 			setShowModal(true)
 			setTimeout(() => {
 				setShowModal(false)
-				router.push('/home')
+				router.push('/')
+				router.refresh()
 			}, 1000)
 		} catch (err) {
 			alert('Błąd sieci lub serwera: ' + err)
@@ -91,7 +92,7 @@ const LoginForm = () => {
 		<div className='w-full md:w-1/2 p-10'>
 			{showModal && (
 				<SuccessModal
-					message='Pomyślnie zarejestrowano!'
+					message='Pomyślnie zalogowano!'
 					onClose={() => {
 						setShowModal(false)
 						router.push('/login')

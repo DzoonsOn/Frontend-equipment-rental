@@ -2,7 +2,7 @@
 
 import { useState, FormEvent, Dispatch, SetStateAction, ChangeEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa'
+import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa'
 import SignUpPrompt from '@/components/auth/register/SignUpPrompt'
 import SuccessModal from '@/components/SuccessModal/SuccessModal'
 
@@ -15,13 +15,17 @@ const RegisterFrom = () => {
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+	const [number, setNumber] = useState('')
+
 	const [errors, setErrors] = useState<{
 		firstName?: string
 		lastName?: string
 		email?: string
 		password?: string
 		confirmPassword?: string
+		number?: string
 	}>({})
+
 	const router = useRouter()
 
 	const validate = () => {
@@ -39,6 +43,12 @@ const RegisterFrom = () => {
 			newErrors.email = 'Adres e-mail jest wymagany.'
 		} else if (!/^\S+@\S+\.\S+$/.test(email)) {
 			newErrors.email = 'Podaj poprawny adres e-mail.'
+		}
+
+		if (!number.trim()) {
+			newErrors.number = 'Numer telefonu jest wymagany.'
+		} else if (!/^\d{9}$/.test(number)) {
+			newErrors.number = 'Numer telefonu musi mieć dokładnie 9 cyfr.'
 		}
 
 		if (!password) {
@@ -75,7 +85,7 @@ const RegisterFrom = () => {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
 				},
-				body: JSON.stringify({ firstName, lastName, email, password }),
+				body: JSON.stringify({ firstName, lastName, email, password, number }),
 			})
 
 			if (!res.ok) {
@@ -176,6 +186,28 @@ const RegisterFrom = () => {
 					{errors.email && (
 						<p id='email-error' className='mt-1 text-sm text-red-600'>
 							{errors.email}
+						</p>
+					)}
+				</div>
+
+				<div className='relative'>
+					<FaPhone className='absolute top-4 left-3 text-gray-400' />
+					<input
+						type='text'
+						placeholder='Numer telefonu'
+						value={number}
+						onChange={handleChangeFactory('number', setNumber)}
+						className={`w-full pl-10 p-3 border rounded text-gray-900 focus:outline-none ${
+							errors.number ? 'border-red-500' : 'border-gray-300'
+						}`}
+						aria-invalid={!!errors.number}
+						aria-describedby='number-error'
+						required
+						maxLength={9}
+					/>
+					{errors.number && (
+						<p id='number-error' className='mt-1 text-sm text-red-600'>
+							{errors.number}
 						</p>
 					)}
 				</div>

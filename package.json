@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "cookie": "^1.0.2",
+    "framer-motion": "^12.12.1",
     "js-cookie": "^3.0.5",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "swiper": "^11.2.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
