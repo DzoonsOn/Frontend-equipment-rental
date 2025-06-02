@@ -15,7 +15,7 @@ const RegisterFrom = () => {
 	const [confirmPassword, setConfirmPassword] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-	const [number, setNumber] = useState('')
+	const [phoneNumber, setNumber] = useState('')
 
 	const [errors, setErrors] = useState<{
 		firstName?: string
@@ -23,7 +23,7 @@ const RegisterFrom = () => {
 		email?: string
 		password?: string
 		confirmPassword?: string
-		number?: string
+		phoneNumber?: string
 	}>({})
 
 	const router = useRouter()
@@ -45,10 +45,10 @@ const RegisterFrom = () => {
 			newErrors.email = 'Podaj poprawny adres e-mail.'
 		}
 
-		if (!number.trim()) {
-			newErrors.number = 'Numer telefonu jest wymagany.'
-		} else if (!/^\d{9}$/.test(number)) {
-			newErrors.number = 'Numer telefonu musi mieć dokładnie 9 cyfr.'
+		if (!phoneNumber.trim()) {
+			newErrors.phoneNumber = 'Numer telefonu jest wymagany.'
+		} else if (!/^\d{9}$/.test(phoneNumber)) {
+			newErrors.phoneNumber = 'Numer telefonu musi mieć dokładnie 9 cyfr.'
 		}
 
 		if (!password) {
@@ -85,7 +85,7 @@ const RegisterFrom = () => {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
 				},
-				body: JSON.stringify({ firstName, lastName, email, password, number }),
+				body: JSON.stringify({ firstName, lastName, email, password, phoneNumber }),
 			})
 
 			if (!res.ok) {
@@ -195,19 +195,19 @@ const RegisterFrom = () => {
 					<input
 						type='text'
 						placeholder='Numer telefonu'
-						value={number}
-						onChange={handleChangeFactory('number', setNumber)}
+						value={phoneNumber}
+						onChange={handleChangeFactory('phoneNumber', setNumber)}
 						className={`w-full pl-10 p-3 border rounded text-gray-900 focus:outline-none ${
-							errors.number ? 'border-red-500' : 'border-gray-300'
+							errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
 						}`}
-						aria-invalid={!!errors.number}
+						aria-invalid={!!errors.phoneNumber}
 						aria-describedby='number-error'
 						required
 						maxLength={9}
 					/>
-					{errors.number && (
+					{errors.phoneNumber && (
 						<p id='number-error' className='mt-1 text-sm text-red-600'>
-							{errors.number}
+							{errors.phoneNumber}
 						</p>
 					)}
 				</div>

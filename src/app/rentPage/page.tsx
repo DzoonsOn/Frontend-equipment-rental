@@ -3,30 +3,29 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-interface Kategoria {
-	idKategoria: number
-	nazwa: string
-	opis: string
+interface Category {
+	categoryId: number
+	name: string
+	description: string
 }
 
-interface Sprzet {
-	idSprzet: number
-	kategoria: Kategoria
-	nazwaSprzetu: string
-	uprawnienia: string
-	status: string
-	kwotaZaDzien: number
+interface ConstructionEquip {
+	constructionEquipId: number
+	category: Category
+	name: string
+	permission: boolean
+	pricePerDay: number
 	zdjecieLink: string
 }
 
 const RentPage = () => {
-	const [equipment, setEquipment] = useState<Sprzet[]>([])
+	const [equipment, setEquipment] = useState<ConstructionEquip[]>([])
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		fetch('http://localhost:8080/api/equipment')
+		fetch('http://localhost:8080/api/public/equipment')
 			.then(res => res.json())
-			.then((data: Sprzet[]) => {
+			.then((data: ConstructionEquip[]) => {
 				setEquipment(data)
 				setLoading(false)
 			})
@@ -47,12 +46,12 @@ const RentPage = () => {
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 					{equipment.map(item => (
 						<div
-							key={item.idSprzet}
+							key={item.constructionEquipId}
 							className='bg-white shadow-md rounded-2xl overflow-hidden border border-gray-300 transition hover:shadow-xl'>
 							<div className='relative w-full h-56 border-b border-gray-200'>
 								<Image
 									src={item.zdjecieLink}
-									alt={item.nazwaSprzetu}
+									alt={item.name}
 									fill
 									className='object-cover'
 									sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
@@ -60,14 +59,14 @@ const RentPage = () => {
 								/>
 							</div>
 							<div className='p-5'>
-								<h2 className='text-2xl font-semibold text-gray-900 mb-1'>{item.nazwaSprzetu}</h2>
+								<h2 className='text-2xl font-semibold text-gray-900 mb-1'>{item.name}</h2>
 								<p className='text-base text-gray-800'>
-									<b>Kategoria:</b> {item.kategoria.nazwa}
+									<b>Kategoria:</b> {item.category.name}
 								</p>
 								<p className='text-base text-gray-800'>
-									<b>Uprawnienia:</b> {item.uprawnienia || 'Brak'}
+									<b>Uprawnienia:</b> {item.permission || 'Brak'}
 								</p>
-								<p className='text-base text-gray-900 mt-1 flex items-center gap-2'>
+								{/* <p className='text-base text-gray-900 mt-1 flex items-center gap-2'>
 									<b>Status:</b>
 									<span
 										className={`px-2 py-0.5 text-sm rounded border ${
@@ -75,9 +74,9 @@ const RentPage = () => {
 										}`}>
 										{item.status}
 									</span>
-								</p>
+								</p> */}
 								<p className='text-lg text-gray-900 mt-3 font-medium'>
-									Cena za dzień: <span className='text-blue-600 font-bold'>{item.kwotaZaDzien} zł</span>
+									Cena za dzień: <span className='text-blue-600 font-bold'>{item.pricePerDay} zł</span>
 								</p>
 							</div>
 						</div>
