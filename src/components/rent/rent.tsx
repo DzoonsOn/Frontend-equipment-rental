@@ -16,7 +16,6 @@ type RentalFormData = {
 	constructionEquipId: number
 	dataStart: string
 	dataEnd: string
-	extraCost: number
 	notes: string
 }
 
@@ -138,6 +137,17 @@ const RentalForm = ({ userId, accessToken }: RentalFormProps) => {
 		}
 	}
 
+	useEffect(() => {
+		if (dataStart && dataEnd && equipmentDetails) {
+			const diffInTime = dataEnd.getTime() - dataStart.getTime()
+			const diffInDays = diffInTime / (1000 * 3600 * 24) + 1
+			const pricePerDay = equipmentDetails.constructionDto.pricePerDay
+
+			const totalCost = pricePerDay * diffInDays
+			setExtraCost(totalCost)
+		}
+	}, [dataStart, dataEnd, equipmentDetails])
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		setErrors({})
@@ -156,6 +166,14 @@ const RentalForm = ({ userId, accessToken }: RentalFormProps) => {
 			newErrors.dateRange = 'Please select a valid date range.'
 		}
 
+		if (dataStart && dataEnd) {
+			const diffInTime = dataEnd.getTime() - dataStart.getTime()
+			const diffInDays = diffInTime / (1000 * 3600 * 24)
+			if (diffInDays >= 14) {
+				newErrors.dateRange = 'Please select a valid date range.'
+			}
+		}
+
 		if (extraCost < 0) {
 			newErrors.extraCost = 'Extra cost cannot be negative.'
 		}
@@ -170,7 +188,6 @@ const RentalForm = ({ userId, accessToken }: RentalFormProps) => {
 			constructionEquipId: constructionEquipId!,
 			dataStart: dataStart!.toISOString().split('T')[0],
 			dataEnd: dataEnd!.toISOString().split('T')[0],
-			extraCost,
 			notes,
 		}
 
@@ -184,16 +201,22 @@ const RentalForm = ({ userId, accessToken }: RentalFormProps) => {
 				body: JSON.stringify(rentalData),
 			})
 
-			if (response.status === 200) {
+			if (response.ok) {
+				// Check if the response status is 2xx
 				setShowModal(true)
 			} else {
-				setShowErrorText(`Failed to create rental, server responded with status: ${response.status}`)
+				const errorData = await response.json() // Get the error message from the response body
+				const errorMessage =
+					errorData.message || `Failed to create rental, server responded with status: ${response.status}`
+
+				setShowErrorText(errorMessage)
 				setShowErrorModal(true)
-				throw new Error(`Failed to create rental, server responded with status: ${response.status}`)
+				throw new Error(errorMessage)
 			}
 		} catch (error: unknown) {
+			// Handle unexpected errors
 			if (error instanceof Error) {
-				setShowErrorText(`Error during rental creation:, ${error}`)
+				setShowErrorText(`${error.message}`)
 				setShowErrorModal(true)
 			} else {
 				setShowErrorText('Unknown error occurred')
@@ -255,16 +278,9 @@ const RentalForm = ({ userId, accessToken }: RentalFormProps) => {
 
 				<div className='flex flex-col space-y-2'>
 					<label htmlFor='extraCost' className='font-semibold'>
-						Extra Cost
+						Kwota całkowita
 					</label>
-					<input
-						id='extraCost'
-						type='number'
-						value={extraCost}
-						onChange={e => setExtraCost(Number(e.target.value))}
-						className={`border p-2 rounded-md ${errors.extraCost ? 'border-red-500' : 'border-gray-300'}`}
-						min='0'
-					/>
+					<label className={` p-2 rounded-md ${errors.extraCost ? 'border-red-500' : ''}`}>{extraCost}</label>
 					{errors.extraCost && <p className='text-sm text-red-600'>{errors.extraCost}</p>}
 				</div>
 
