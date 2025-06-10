@@ -76,8 +76,7 @@ const EquipmentList = ({ access_token }: EquipmentListProps) => {
 				setEquipmentList(prev => prev.filter(item => item.constructionEquipId !== selectedEquipmentId))
 				setShowModal(false)
 			} else {
-				const data = await res.json()
-				setError(data.message || 'Błąd podczas usuwania sprzętu')
+				setError('Błąd podczas usuwania sprzętu, sprzęt jest gdzieś aktualnie przez kogoś wynajęty')
 			}
 		} catch (err) {
 			setError(`Wystąpił błąd sieciowy przy usuwaniu sprzętu: ${err}`)

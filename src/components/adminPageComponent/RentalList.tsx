@@ -142,9 +142,11 @@ const RentalList = ({ access_token }: RentalListProps) => {
 								</button>
 							</h2>
 
-							{/* Conditionally render rental details */}
 							{expandedRental === rental.rentalId && (
 								<div className='mt-4'>
+									<p>
+										<strong>Id user:</strong> {rental.userId}
+									</p>
 									<p>
 										<strong>Data rozpoczęcia:</strong> {rental.dataStart}
 									</p>

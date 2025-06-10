@@ -5,6 +5,7 @@ import 'react-calendar/dist/Calendar.css'
 import SuccessModal from '../modal/SuccessModal'
 import ErrorModal from '../modal/ErrorModal'
 import { useRouter } from 'next/navigation'
+import { ConstructionResponse } from './config'
 
 type RentalFormProps = {
 	userId: number
@@ -29,7 +30,7 @@ const RentalForm = ({ userId, accessToken }: RentalFormProps) => {
 	const [occupiedDates, setOccupiedDates] = useState<Date[]>([])
 	const [errors, setErrors] = useState<{ [key: string]: string }>({})
 	const [isClient, setIsClient] = useState(false)
-	const [equipmentDetails, setEquipmentDetails] = useState<any>(null)
+	const [equipmentDetails, setEquipmentDetails] = useState<ConstructionResponse[]>([])
 
 	const [showModal, setShowModal] = useState(false)
 	const [showErrorModal, setShowErrorModal] = useState(false)
