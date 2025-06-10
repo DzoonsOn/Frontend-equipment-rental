@@ -5,7 +5,7 @@ export async function POST(req: Request) {
 	const body = await req.json()
 	const { email, password } = body
 
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/authenticate`, {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/authenticate`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
 		body: JSON.stringify({ email, password }),
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 	}
 
 	const data = await response.json()
-	const { access_token, refresh_token } = data
+	const { access_token, refresh_token, userId, role } = data
 
 	const res = NextResponse.json({ message: 'Zalogowano pomyślnie' })
 
@@ -40,6 +40,28 @@ export async function POST(req: Request) {
 			maxAge: 60 * 60 * 24 * 7,
 			path: '/',
 			sameSite: 'lax' as const,
+		})
+	)
+
+	res.headers.append(
+		'Set-Cookie',
+		serialize('userId', userId, {
+			httpOnly: false,
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: 60 * 60 * 24 * 7,
+			path: '/',
+			sameSite: 'lax',
+		})
+	)
+
+	res.headers.append(
+		'Set-Cookie',
+		serialize('role', role, {
+			httpOnly: false,
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: 60 * 60 * 24 * 7,
+			path: '/',
+			sameSite: 'lax',
 		})
 	)
 

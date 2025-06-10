@@ -4,10 +4,13 @@ import { useState, FormEvent, Dispatch, SetStateAction, ChangeEvent } from 'reac
 import { useRouter } from 'next/navigation'
 import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa'
 import SignUpPrompt from '@/components/auth/register/SignUpPrompt'
-import SuccessModal from '@/components/SuccessModal/SuccessModal'
+import SuccessModal from '@/components/modal/SuccessModal'
+import ErrorModal from '@/components/modal/ErrorModal'
 
 const RegisterFrom = () => {
 	const [showModal, setShowModal] = useState(false)
+	const [showErrorModal, setShowErrorModal] = useState(false)
+	const [showErrorTest, setShowErrorText] = useState('')
 	const [firstName, setFirstName] = useState('')
 	const [lastName, setLastName] = useState('')
 	const [email, setEmail] = useState('')
@@ -90,17 +93,19 @@ const RegisterFrom = () => {
 
 			if (!res.ok) {
 				const errorData = await res.json()
-				alert(`Błąd logowania: ${errorData.message || res.statusText}`)
+				setShowErrorText(`Błąd logowania: ${errorData.message || res.statusText}`)
+				setShowErrorModal(true)
 				return
 			}
 
-			setShowModal(true) // pokaz modal
+			setShowModal(true)
 			setTimeout(() => {
 				setShowModal(false)
 				router.push('/login')
 			}, 1000)
 		} catch (err) {
-			alert('Błąd sieci lub serwera: ' + err)
+			setShowErrorText('Błąd sieci lub serwera: ' + err)
+			setShowErrorModal(true)
 		}
 	}
 
@@ -114,6 +119,7 @@ const RegisterFrom = () => {
 
 	return (
 		<div className='w-full md:w-1/2 p-10'>
+			{showErrorModal && <ErrorModal message={showErrorTest} onClose={() => setShowErrorModal(false)} />}
 			{showModal && (
 				<SuccessModal
 					message='Pomyślnie zarejestrowano!'

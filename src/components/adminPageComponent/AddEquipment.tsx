@@ -10,7 +10,6 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 	const [idkategoria, setIdkategoria] = useState<number>(0)
 	const [nazwaSprzetu, setNazwaSprzetu] = useState('')
 	const [uprawnienia, setUprawnienia] = useState('')
-	const [status, setStatus] = useState('')
 	const [kwotaZaDzien, setKwotaZaDzien] = useState<number>(0)
 	const [zdjecieLink, setZdjecieLink] = useState('')
 
@@ -22,7 +21,7 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 		setSuccessMsg(null)
 		setErrorMsg(null)
 
-		if (!nazwaSprzetu.trim() || !uprawnienia.trim() || !status.trim() || !zdjecieLink.trim()) {
+		if (!nazwaSprzetu.trim() || !uprawnienia.trim() || !zdjecieLink.trim()) {
 			setErrorMsg('Proszę uzupełnić wszystkie pola tekstowe')
 			return
 		}
@@ -32,7 +31,7 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 		}
 
 		try {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/equipment`, {
+			const res = await fetch(`http://localhost:8080/api/v1/equipment`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -40,12 +39,11 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 					Authorization: `Bearer ${access_token}`,
 				},
 				body: JSON.stringify({
-					idkategoria,
-					nazwaSprzetu,
-					uprawnienia,
-					status,
-					kwotaZaDzien,
-					zdjecieLink,
+					name: nazwaSprzetu,
+					permission: uprawnienia,
+					pricePerDay: kwotaZaDzien,
+					zdjecieLink: zdjecieLink,
+					categoryId: idkategoria,
 				}),
 			})
 
@@ -60,7 +58,6 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 			setIdkategoria(0)
 			setNazwaSprzetu('')
 			setUprawnienia('')
-			setStatus('')
 			setKwotaZaDzien(0)
 			setZdjecieLink('')
 		} catch (err) {
@@ -69,7 +66,7 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 	}
 
 	return (
-		<div className='max-w-xl mx-auto p-8 bg-white rounded-lg shadow-md mt-12'>
+		<div className='max-w-xl mx-auto p-8 bg-white rounded-lg shadow-md mt-12 text-black'>
 			<h1 className='text-3xl font-bold mb-6 text-blue-700'>Dodaj nowy sprzęt</h1>
 
 			<form onSubmit={handleSubmit} className='space-y-6'>
@@ -114,21 +111,6 @@ const AddEquipment = ({ access_token }: AddEquipmentProps) => {
 						required
 					/>
 				</div>
-
-				<div>
-					<label htmlFor='status' className='block mb-2 font-semibold text-gray-700'>
-						Status
-					</label>
-					<input
-						type='text'
-						id='status'
-						value={status}
-						onChange={e => setStatus(e.target.value)}
-						className='w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
-						required
-					/>
-				</div>
-
 				<div>
 					<label htmlFor='kwotaZaDzien' className='block mb-2 font-semibold text-gray-700'>
 						Kwota za dzień

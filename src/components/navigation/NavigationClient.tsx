@@ -25,9 +25,10 @@ const NavigationClient: React.FC<NavigationClientProps> = ({
 	const links = [
 		{ href: '/', label: 'Strona główna', exact: true },
 		{ href: '/rentPage', label: 'Sprzęt' },
-		...(isLoggedIn ? [{ href: '/wypozyczenia', label: 'Moje wypożyczenia' }] : []),
+		...(isLoggedIn ? [{ href: '/rentsAll', label: 'Moje wypożyczenia' }] : []),
 		{ href: '/contact', label: 'Kontakt' },
 		...(isAdmin ? [{ href: '/admin', label: 'Admin' }] : []),
+		...(isLoggedIn ? [{ href: '/mydata', label: 'Profil' }] : []),
 		{ href: isLoggedIn ? '/logout' : '/login', label: isLoggedIn ? 'Wyloguj' : 'Zaloguj' },
 	]
 

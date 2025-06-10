@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { FaUser, FaLock } from 'react-icons/fa'
 import SignUpPrompt from '@/components/auth/login/SignUpPrompt'
 import ForgotPassword from '@/components/auth/login/ForgotPassword'
-import SuccessModal from '@/components/SuccessModal/SuccessModal'
+import SuccessModal from '@/components/modal/SuccessModal'
 
 const LoginForm = () => {
 	const [showModal, setShowModal] = useState(false)
@@ -13,19 +13,22 @@ const LoginForm = () => {
 	const [password, setPassword] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
 	const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+	const [formError, setFormError] = useState<string | null>(null) // Stan do przechowywania globalnego błędu
 	const router = useRouter()
 
 	const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.target.value)
+
 		if (errors.password) {
-			setErrors(prev => ({ ...prev, password: undefined }))
+			setErrors(prev => ({ ...prev, password: undefined })) // Usunięcie błędu przy zmianie hasła
 		}
 	}
 
 	const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value)
+
 		if (errors.email) {
-			setErrors(prev => ({ ...prev, email: undefined }))
+			setErrors(prev => ({ ...prev, email: undefined })) // Usunięcie błędu przy zmianie emaila
 		}
 	}
 
@@ -64,14 +67,14 @@ const LoginForm = () => {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Accept: 'application/json',
+					// Accept: 'application/json',
 				},
 				body: JSON.stringify({ email, password }),
 			})
 
 			if (!res.ok) {
 				const errorData = await res.json()
-				alert(`Błąd logowania: ${errorData.message || res.statusText}`)
+				setFormError(errorData.message || 'Błąd logowania')
 				return
 			}
 
@@ -84,7 +87,7 @@ const LoginForm = () => {
 				router.refresh()
 			}, 1000)
 		} catch (err) {
-			alert('Błąd sieci lub serwera: ' + err)
+			setFormError('Błąd sieci lub serwera: ' + err)
 		}
 	}
 
@@ -103,6 +106,11 @@ const LoginForm = () => {
 			<p className='text-sm text-gray-500 mb-6'>
 				Zyskaj dostęp do sprzętu budowlanego, historii wypożyczeń i rezerwacji.
 			</p>
+			{formError && (
+				<p className='text-red-600 text-sm mb-4'>
+					{formError} {/* Wyświetlanie komunikatu o błędzie */}
+				</p>
+			)}
 			<form onSubmit={handleSubmit} className='space-y-4' noValidate>
 				<div className='relative'>
 					<FaUser className='absolute top-4 left-3 text-gray-400' />
