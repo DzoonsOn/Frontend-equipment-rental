@@ -69,8 +69,7 @@ const CategoryList = ({ access_token }: CategoryListProps) => {
 				setCategories(prev => prev.filter(item => item.categoryId !== selectedCategoryId))
 				setShowModal(false) // Close the modal after deletion
 			} else {
-				const data = await res.json()
-				setError(data.message || 'Błąd podczas usuwania kategorii')
+				setError('Błąd podczas usuwania kategorii, kategoria jest powiązana z jakimś sprzętem')
 			}
 		} catch (err) {
 			setError(`Wystąpił błąd sieciowy przy usuwaniu kategorii: ${err}`)

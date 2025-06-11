@@ -144,7 +144,7 @@ const RentPage = () => {
 
 								<div className='flex items-center'>
 									<span className='font-semibold text-gray-700 w-32'>Kategoria:</span>
-									<span className='text-gray-900'>{item.category.name}</span>
+									<span className='text-gray-900 truncate max-w-xs'>{item.category.name}</span>
 								</div>
 
 								<div className='flex items-center'>

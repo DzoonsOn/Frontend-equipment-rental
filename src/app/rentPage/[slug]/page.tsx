@@ -154,7 +154,7 @@ const RentDetailPage = ({ params }: Props) => {
 
 											<div className='flex items-center'>
 												<span className='font-semibold text-gray-700 w-32'>Kategoria:</span>
-												<span className='text-gray-900'>{item.categoryDto.name}</span>
+												<span className='text-gray-900 truncate max-w-xs'>{item.categoryDto.name}</span>
 											</div>
 
 											<div className='flex items-center'>

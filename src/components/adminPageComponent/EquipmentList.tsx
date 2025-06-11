@@ -77,6 +77,7 @@ const EquipmentList = ({ access_token }: EquipmentListProps) => {
 				setShowModal(false)
 			} else {
 				setError('Błąd podczas usuwania sprzętu, sprzęt jest gdzieś aktualnie przez kogoś wynajęty')
+				window.location.reload()
 			}
 		} catch (err) {
 			setError(`Wystąpił błąd sieciowy przy usuwaniu sprzętu: ${err}`)
